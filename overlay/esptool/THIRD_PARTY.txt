@@ -1,0 +1,13 @@
+This archive bundles unmodified third-party software:
+
+- CPython 3.8.10, Windows embeddable package (32-bit) - PSF License, see LICENSE.txt
+  https://www.python.org/ftp/python/3.8.10/python-3.8.10-embed-win32.zip
+- esptool 4.8.1 (Lib/site-packages/esptool) - GPL-2.0-or-later
+  https://github.com/espressif/esptool/tree/v4.8.1
+- pyserial 3.5 (Lib/site-packages/serial) - BSD-3-Clause
+  https://github.com/pyserial/pyserial
+- intelhex 2.3.0 (Lib/site-packages/intelhex) - BSD-3-Clause
+  https://github.com/python-intelhex/intelhex
+
+esptool_cli.py and python38._pth come from
+https://github.com/Obed0101/heltecv4-32bit-windows

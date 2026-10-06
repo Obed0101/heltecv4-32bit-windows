@@ -1,0 +1,64 @@
+{
+  "package": {
+    "name": "Heltec-esp32-win32",
+    "maintainer": "Heltec Automation (repackaged for 32-bit Windows / Windows 7)",
+    "indexFileName": "package_heltec_esp32_win32_index.json",
+    "platformName": "Heltec ESP32 Series (Windows 32-bit / Windows 7)",
+    "hosts": ["i686-mingw32", "x86_64-mingw32"]
+  },
+  "upstream": {
+    "indexUrl": "https://resource.heltec.cn/download/package_heltec_esp32_index.json",
+    "packageName": "Heltec-esp32",
+    "platformVersion": "3.3.8",
+    "platformSha256": "fcb94268b6e00bff992748fddbe4c269677482bcde33fcd1c68ae8fa8563ba0d",
+    "win32Host": "i686-mingw32",
+    "keptTools": ["esp32-arduino-libs", "xtensa-esp-elf-gcc", "mkspiffs", "mklittlefs"],
+    "keptForeignTools": [{ "packager": "arduino", "name": "dfu-util" }]
+  },
+  "core": {
+    "archiveFileName": "heltec-esp32-arduino-3.3.8-win32.zip",
+    "rootDir": "heltec-esp32-arduino-3.3.8",
+    "overlayDir": "overlay/core",
+    "removedFiles": ["tools/espota.exe", "tools/gen_esp32part.exe", "tools/gen_insights_package.exe"]
+  },
+  "installer": {
+    "archiveFileName": "heltec-v4-instalador-windows.zip",
+    "rootDir": "heltec-v4-instalador-windows",
+    "sourceDir": "windows"
+  },
+  "esptool": {
+    "toolName": "esptool_py",
+    "toolVersion": "4.8.1-py3.8.10-win32",
+    "archiveFileName": "esptool-4.8.1-py3.8.10-win32.zip",
+    "rootDir": "esptool",
+    "overlayDir": "overlay/esptool",
+    "sitePackagesDir": "Lib/site-packages",
+    "python": {
+      "url": "https://www.python.org/ftp/python/3.8.10/python-3.8.10-embed-win32.zip",
+      "sha256": "760dc79bcb434ee80b1001a30bb6f798287881851bac6d8137867894d40ef1fc"
+    },
+    "pythonPackages": [
+      {
+        "url": "https://files.pythonhosted.org/packages/source/e/esptool/esptool-4.8.1.tar.gz",
+        "sha256": "dc4ef26b659e1a8dcb019147c0ea6d94980b34de99fbe09121c7941c8b254531",
+        "format": "sdist",
+        "sourceRoot": "esptool-4.8.1",
+        "modules": ["esptool"]
+      },
+      {
+        "url": "https://files.pythonhosted.org/packages/07/bc/587a445451b253b285629263eb51c2d8e9bcea4fc97826266d186f96f558/pyserial-3.5-py2.py3-none-any.whl",
+        "sha256": "c4451db6ba391ca6ca299fb3ec7bae67a5c55dde170964c7a14ceefec02f2cf0",
+        "format": "wheel",
+        "sourceRoot": "",
+        "modules": ["serial"]
+      },
+      {
+        "url": "https://files.pythonhosted.org/packages/97/78/79461288da2b13ed0a13deb65c4ad1428acb674b95278fa9abf1cefe62a2/intelhex-2.3.0-py2.py3-none-any.whl",
+        "sha256": "87cc5225657524ec6361354be928adfd56bcf2a3dcc646c40f8f094c39c07db4",
+        "format": "wheel",
+        "sourceRoot": "",
+        "modules": ["intelhex"]
+      }
+    ]
+  }
+}

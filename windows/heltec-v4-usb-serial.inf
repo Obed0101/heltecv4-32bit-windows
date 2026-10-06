@@ -1,0 +1,57 @@
+; Serial port driver binding for the Heltec WiFi LoRa 32 V4 on Windows 7 / 8.
+; The V4 has no USB-UART chip: it uses the native USB of the ESP32-S3, a standard
+; USB CDC device. Windows 10 binds usbser.sys to it automatically; Windows 7 needs
+; this file. It installs no new driver, it only assigns the usbser.sys of Windows.
+;
+; Install: Device Manager -> the unknown "USB JTAG/serial debug unit" device ->
+; Update driver -> Browse my computer -> select this folder.
+
+[Version]
+Signature="$Windows NT$"
+Class=Ports
+ClassGuid={4D36E978-E325-11CE-BFC1-08002BE10318}
+Provider=%PROVIDER%
+DriverVer=10/06/2026,1.0.0.0
+
+[Manufacturer]
+%PROVIDER%=Devices,NTx86,NTamd64
+
+; 303A:1001 MI_00 = ESP32-S3 "Hardware CDC and JTAG" (bootloader and default sketches)
+; 303A:1001 / 303A:0002 without MI = ESP32-S3 TinyUSB CDC sketches
+[Devices.NTx86]
+%S3_SERIAL%=UsbSerial,USB\VID_303A&PID_1001&MI_00
+%S3_TINYUSB%=UsbSerial,USB\VID_303A&PID_1001
+%S3_TINYUSB%=UsbSerial,USB\VID_303A&PID_0002&MI_00
+%S3_TINYUSB%=UsbSerial,USB\VID_303A&PID_0002
+
+[Devices.NTamd64]
+%S3_SERIAL%=UsbSerial,USB\VID_303A&PID_1001&MI_00
+%S3_TINYUSB%=UsbSerial,USB\VID_303A&PID_1001
+%S3_TINYUSB%=UsbSerial,USB\VID_303A&PID_0002&MI_00
+%S3_TINYUSB%=UsbSerial,USB\VID_303A&PID_0002
+
+[UsbSerial.NT]
+include=mdmcpq.inf
+CopyFiles=FakeModemCopyFileSection
+AddReg=UsbSerial.AddReg
+
+[UsbSerial.AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,usbser.sys
+HKR,,EnumPropPages32,,"MsPorts.dll,SerialPortPropPageProvider"
+
+[UsbSerial.NT.Services]
+AddService=usbser,0x00000002,UsbSerial.Service
+
+[UsbSerial.Service]
+DisplayName=%SERVICE%
+ServiceType=1
+StartType=3
+ErrorControl=1
+ServiceBinary=%12%\usbser.sys
+
+[Strings]
+PROVIDER="Heltec V4 (usbser.sys binding)"
+S3_SERIAL="Heltec WiFi LoRa 32 V4 (ESP32-S3 USB Serial)"
+S3_TINYUSB="Heltec WiFi LoRa 32 V4 (ESP32-S3 TinyUSB CDC)"
+SERVICE="USB Serial Driver (usbser.sys)"

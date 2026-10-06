@@ -1,0 +1,32 @@
+# Heltec ESP32 core on 32-bit Windows and Windows 7.
+# Only *.windows keys are overridden; platform.txt itself is the unmodified Heltec file.
+
+# --- Compiler -------------------------------------------------------------------
+# The xtensa-<chip>-elf-* launchers of the toolchain need Windows 10. Call the real
+# xtensa-esp-elf-* compiler and pass the chip configuration the launcher would pass.
+compiler.prefix.windows={build.tarch}-esp-elf-
+compiler.dynconfig.xtensa="-mdynconfig={tools.xtensa-esp-elf-gcc.path}\lib\xtensa_{build.target}.so"
+compiler.dynconfig.riscv32=
+compiler.c.extra_flags.windows={compiler.dynconfig.{build.tarch}}
+compiler.cpp.extra_flags.windows={compiler.dynconfig.{build.tarch}}
+compiler.S.extra_flags.windows={compiler.dynconfig.{build.tarch}}
+compiler.c.elf.extra_flags.windows={compiler.dynconfig.{build.tarch}}
+
+# --- Python helpers ---------------------------------------------------------------
+# The core ships these helpers as 64-bit .exe files; run their .py sources with the
+# 32-bit Python that comes inside the esptool_py tool of this package.
+tools.gen_esp32part.cmd.windows="{runtime.tools.esptool_py.path}\python.exe" "{runtime.platform.path}\tools\gen_esp32part.py"
+tools.gen_insights_pkg.cmd.windows="{runtime.tools.esptool_py.path}\python.exe" "{runtime.platform.path}\tools\gen_insights_package.py"
+tools.esptool_py.network_cmd.windows="{runtime.tools.esptool_py.path}\python.exe" "{runtime.platform.path}\tools\espota.py" -r
+tools.esp_ota.cmd.windows="{runtime.tools.esptool_py.path}\python.exe" "{runtime.platform.path}\tools\espota.py" -r
+
+# --- esptool ----------------------------------------------------------------------
+# esptool_cli.py runs esptool 4.8.1 and accepts the esptool 5 arguments of platform.txt.
+recipe.hooks.prebuild.4.pattern.windows=cmd /c IF EXIST "{build.source.path}\bootloader.bin" ( COPY /y "{build.source.path}\bootloader.bin" "{build.path}\{build.project_name}.bootloader.bin" ) ELSE ( IF EXIST "{build.variant.path}\{build.custom_bootloader}.bin" ( COPY "{build.variant.path}\{build.custom_bootloader}.bin" "{build.path}\{build.project_name}.bootloader.bin" ) ELSE ( "{runtime.tools.esptool_py.path}\python.exe" "{runtime.tools.esptool_py.path}\esptool_cli.py" {recipe.hooks.prebuild.4.pattern_args} "{build.path}\{build.project_name}.bootloader.bin" "{compiler.sdk.path}\bin\bootloader_{build.boot}_{build.boot_freq}.elf" ) )
+recipe.objcopy.bin.pattern.windows="{runtime.tools.esptool_py.path}\python.exe" "{runtime.tools.esptool_py.path}\esptool_cli.py" {recipe.objcopy.bin.pattern_args}
+recipe.hooks.objcopy.postobjcopy.3.pattern.windows="{runtime.tools.esptool_py.path}\python.exe" "{runtime.tools.esptool_py.path}\esptool_cli.py" {recipe.hooks.objcopy.postobjcopy.3.pattern_args}
+
+tools.esptool_py.upload.pattern.windows="{runtime.tools.esptool_py.path}\python.exe" "{runtime.tools.esptool_py.path}\esptool_cli.py" {upload.pattern_args}
+tools.esptool_py.program.pattern.windows="{runtime.tools.esptool_py.path}\python.exe" "{runtime.tools.esptool_py.path}\esptool_cli.py" {program.pattern_args}
+tools.esptool_py.erase.pattern.windows="{runtime.tools.esptool_py.path}\python.exe" "{runtime.tools.esptool_py.path}\esptool_cli.py" {erase.pattern_args}
+tools.esptool_py_app_only.upload.pattern.windows="{runtime.tools.esptool_py.path}\python.exe" "{runtime.tools.esptool_py.path}\esptool_cli.py" {tools.esptool_py_app_only.upload.pattern_args}

@@ -1,0 +1,3 @@
+# The only RISC-V (ESP32-C3) board of the core. This package leaves out the 700 MB
+# RISC-V toolchain, so the board is hidden instead of failing at compile time.
+heltec_wireless_mini_shell.hide=true
