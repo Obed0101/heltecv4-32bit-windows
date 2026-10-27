@@ -20,7 +20,9 @@ echo == 1. Python de 32 bits y esptool
 "%PY%\python.exe" "%PY%\esptool_cli.py" version
 if errorlevel 1 (
   set "FALLOS=1"
-  echo [FALLO] Python no arranca. En Windows 7 instala el Service Pack 1 y la actualizacion KB2999226 ^(Universal C Runtime^).
+  echo [FALLO] Python o esptool fallo. Revisa el error anterior.
+  echo En Windows 7 comprueba Service Pack 1 y KB2999226 ^(Universal C Runtime^).
+  echo Si el error menciona _ctypes, elimina la plataforma en el Gestor de tarjetas y vuelve a instalarla.
 ) else echo [OK]
 
 echo == 2. Compilador para ESP32-S3

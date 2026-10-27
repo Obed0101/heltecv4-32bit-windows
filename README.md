@@ -7,7 +7,7 @@ donde el índice oficial (`package_heltec_esp32_index.json`) no puede funcionar.
 
 | Pieza del paquete oficial | Problema | Qué hace este paquete |
 |---|---|---|
-| `esptool` 5.2.0 | Para el host de 32 bits apunta al zip `windows-amd64` (64 bits). esptool 5 exige Python 3.10, que no existe para Windows 7 | Python 3.8.10 de 32 bits embebido + esptool 4.8.1, con un traductor de argumentos (`esptool_cli.py`) |
+| `esptool` 5.2.0 | Para el host de 32 bits apunta al zip `windows-amd64` (64 bits). esptool 5 exige Python 3.10, que no existe para Windows 7 | Python 3.7.9 de 32 bits embebido + esptool 4.8.1, con un traductor de argumentos (`esptool_cli.py`) |
 | `gen_esp32part.exe`, `espota.exe`, `gen_insights_package.exe` del core | Son ejecutables de 64 bits | Se ejecutan sus fuentes `.py` (incluidas en el core) con el mismo Python |
 | Lanzadores `xtensa-esp32s3-elf-*.exe` del compilador | Requieren Windows 10 | Se llama al compilador real `xtensa-esp-elf-*` con `-mdynconfig`, que es lo que hace el lanzador |
 | Toolchain RISC-V, GDB y OpenOCD | ~770 MB que la V4 no usa | No se instalan (la única placa ESP32-C3 queda oculta) |
@@ -19,6 +19,19 @@ Todos los cambios están en `platform.local.txt` y `boards.local.txt` y solo afe
 
 Requisitos: Arduino IDE 1.8.19, ~3 GB libres y ~950 MB de descarga. En Windows 7: Service Pack 1
 y la actualización [KB2999226](https://support.microsoft.com/kb/2999226) (Universal C Runtime).
+
+### Por qué Python 3.7 y no 3.8
+
+Python 3.8 carga cada módulo `.pyd` con `LoadLibraryExW(LOAD_LIBRARY_SEARCH_DEFAULT_DIRS |
+LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR)` (`Python/dynload_win.c`). Un Windows 7 sin
+[KB2533623](https://support.microsoft.com/kb/2533623) rechaza esos flags con el error 87, y Python
+arranca pero falla al importar `_ctypes`, que pyserial necesita:
+`DLL load failed while importing _ctypes: El parámetro no es correcto`. Python 3.7.9 usa
+`LOAD_WITH_ALTERED_SEARCH_PATH`, que Windows 7 admite sin esa actualización.
+
+Si la PC ya tenía instalada la build 1 (Python 3.8.10), en el Gestor de tarjetas hay que **eliminar**
+*Heltec ESP32 Series (Windows 32-bit / Windows 7)* y volver a instalarla: la versión de la
+plataforma sigue siendo 3.3.8, así que el IDE no ofrece la actualización por sí solo.
 
 URL para el Gestor de tarjetas (la forma estándar de Arduino):
 
@@ -68,7 +81,7 @@ python3 -m unittest discover tests
 
 ## Licencias
 
-El core es el de Heltec / Espressif (LGPL-2.1). El zip de esptool incluye CPython 3.8.10 (PSF),
+El core es el de Heltec / Espressif (LGPL-2.1). El zip de esptool incluye CPython 3.7.9 (PSF),
 esptool 4.8.1 (GPL-2.0-or-later), pyserial e intelhex (BSD), sin modificar; ver `THIRD_PARTY.txt`
 dentro del zip. Este repositorio no está afiliado a Heltec.
 
@@ -78,6 +91,10 @@ Comprobado en macOS, con el contenido exacto de los zips:
 
 - esptool 4.8.1 sobre Python 3.8 con el traductor produce `bootloader.bin`, la imagen de la
   aplicación y `merged.bin` **idénticos byte a byte** a los de esptool 5.2.0 oficial (ESP32-S3).
+  Con Python 3.7 (Linux), `bootloader.bin`, la tabla de particiones de `gen_esp32part.py` y
+  `merged.bin` salen idénticos byte a byte a los de Python 3.8.
+- `python37.dll`, `python.exe` y `_ctypes.pyd` de 3.7.9 no importan funciones de KB2533623
+  (`AddDllDirectory`, `SetDefaultDllDirectories`).
 - El compilador real con `-mdynconfig` genera objetos y ELF idénticos a los del lanzador.
 - Los 52 ejecutables reales del toolchain i686 solo importan funciones de `KERNEL32`/`msvcrt`/`USER32`
   disponibles en Windows 7.

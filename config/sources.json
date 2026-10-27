@@ -28,14 +28,14 @@
   },
   "esptool": {
     "toolName": "esptool_py",
-    "toolVersion": "4.8.1-py3.8.10-win32",
-    "archiveFileName": "esptool-4.8.1-py3.8.10-win32.zip",
+    "toolVersion": "4.8.1-py3.7.9-win32",
+    "archiveFileName": "esptool-4.8.1-py3.7.9-win32.zip",
     "rootDir": "esptool",
     "overlayDir": "overlay/esptool",
     "sitePackagesDir": "Lib/site-packages",
     "python": {
-      "url": "https://www.python.org/ftp/python/3.8.10/python-3.8.10-embed-win32.zip",
-      "sha256": "760dc79bcb434ee80b1001a30bb6f798287881851bac6d8137867894d40ef1fc"
+      "url": "https://www.python.org/ftp/python/3.7.9/python-3.7.9-embed-win32.zip",
+      "sha256": "010cef379e1096cebf667e8f2c92a72dc455c927c7f7b8ca8e029975d81946bf"
     },
     "pythonPackages": [
       {

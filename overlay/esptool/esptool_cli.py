@@ -2,7 +2,9 @@
 
 The core's platform.txt uses the esptool 5 spelling (write-flash, --flash-mode,
 default-reset). esptool 5 needs Python 3.10, which does not run on Windows 7, so
-this package ships esptool 4.8.1 on Python 3.8 and translates the spelling here.
+this package ships esptool 4.8.1 on Python 3.7 and translates the spelling here.
+Python 3.8+ loads extension modules with LoadLibraryExW search flags that Windows 7
+rejects without KB2533623 ("DLL load failed while importing _ctypes").
 """
 
 import os
